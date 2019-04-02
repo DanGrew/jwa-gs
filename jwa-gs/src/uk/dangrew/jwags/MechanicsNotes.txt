@@ -1,0 +1,3 @@
+MOVE ORDERING
+Account for level priority
+Introduce another branch for equal priority (same level and speed)
