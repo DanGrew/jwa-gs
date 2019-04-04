@@ -1,39 +1,20 @@
 package uk.dangrew.jwags.model;
 
-import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleObjectProperty;
+public interface Dinosaur {
 
-public class Dinosaur {
+   public String name();
    
-   private final DinosaurType type;
-   private final ObjectProperty< Integer > health;
-   private final ObjectProperty< Integer > damage;
+   public int health();
    
-   public Dinosaur( 
-            DinosaurType type
-   ) {
-      this.type = type;
-      this.health = new SimpleObjectProperty<>( type.health() );
-      this.damage = new SimpleObjectProperty<>( type.damage() );
-   }//End Constructor
+   public int speed();
    
-   public DinosaurType type(){
-      return type;
-   }//End Method
+   public int damage();
    
-   public ObjectProperty< Integer > health(){
-      return health;
-   }//End Method
+   public int armor();
    
-   public ObjectProperty< Integer > damage(){
-      return damage;
-   }//End Method
+   public int critical();
    
-   public Dinosaur copy(){
-      Dinosaur copy = type.create();
-      copy.health.set( health.get() );
-      copy.damage.set( damage.get() );
-      return copy;
-   }//End Method
+   public String displayableDescription();
    
-}//End Class
+}//End Interface
+

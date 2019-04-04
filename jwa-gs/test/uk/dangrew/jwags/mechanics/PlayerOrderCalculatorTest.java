@@ -8,21 +8,21 @@ import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 
 import javafx.util.Pair;
-import uk.dangrew.jwags.model.Dinosaur;
+import uk.dangrew.jwags.model.BattlingDinosaur;
 import uk.dangrew.jwags.model.DinosaurType;
 import uk.dangrew.kode.launch.TestApplication;
 
 public class PlayerOrderCalculatorTest {
 
-   private Dinosaur dino1;
-   private Dinosaur dino2;
+   private BattlingDinosaur dino1;
+   private BattlingDinosaur dino2;
    private PlayerOrderCalculator systemUnderTest;
 
    @Before public void initialiseSystemUnderTest() {
       TestApplication.startPlatform();
       MockitoAnnotations.initMocks( this );
-      dino1 = DinosaurType.Stegosaurus.create();
-      dino2 = DinosaurType.Velociraptor.create();
+      dino1 = DinosaurType.ArmoredDinosaur.create();
+      dino2 = DinosaurType.BasicDinosaur.create();
       systemUnderTest = new PlayerOrderCalculator();
    }//End Method
 

@@ -1,25 +1,44 @@
 package uk.dangrew.jwags.model;
 
+import static uk.dangrew.jwags.model.DinosaurActions.Stegosaurus_SuperiorityStrike;
+import static uk.dangrew.jwags.model.DinosaurActions.Stegosaurus_Thagomizer;
+import static uk.dangrew.jwags.model.DinosaurActions.Velociraptor_Pounce;
+import static uk.dangrew.jwags.model.DinosaurActions.Velociraptor_Strike;
+
 import java.util.Arrays;
 import java.util.List;
 
-import uk.dangrew.jwags.moves.DinosaurAction;
-import uk.dangrew.jwags.moves.Pounce;
-import uk.dangrew.jwags.moves.Strike;
-import uk.dangrew.jwags.moves.SuperiorityStrike;
-import uk.dangrew.jwags.moves.Thagomizer;
-
 public enum DinosaurType {
    
-   Stegosaurus( 117, 4500, 1200, 5, 20, new SuperiorityStrike(), new Thagomizer() ),
-   Velociraptor( 132, 1950, 1320, 5, 0, new Strike(), new Pounce() );
+   Stegosaurus( 
+            117, 4500, 1200, 5, 20, 
+            Stegosaurus_SuperiorityStrike, 
+            Stegosaurus_Thagomizer 
+   ),
+   Velociraptor( 
+            132, 1950, 1320, 5, 0, 
+            Velociraptor_Strike,
+            Velociraptor_Pounce
+   ),
+   
+   
+   ArmoredDinosaur( 
+            117, 4500, 1200, 5, 20, 
+            Stegosaurus_SuperiorityStrike, 
+            Stegosaurus_Thagomizer 
+   ),
+   BasicDinosaur( 
+            132, 1950, 1320, 5, 0, 
+            Velociraptor_Strike,
+            Velociraptor_Pounce
+   );
 
    private final int speed;
    private final int health;
    private final int damage;
    private final int critical;
    private final int armor;
-   private final List< DinosaurAction > moves;
+   private final List< DinosaurActions > actions;
    
    private DinosaurType( 
             int speed,
@@ -27,14 +46,14 @@ public enum DinosaurType {
             int damage,
             int critical, 
             int armor,
-            DinosaurAction... moves
+            DinosaurActions... actions
    ) {
       this.speed = speed;
       this.health = health;
       this.damage = damage;
       this.critical = critical;
       this.armor = armor;
-      this.moves = Arrays.asList( moves );
+      this.actions = Arrays.asList( actions );
    }//End Constructor
    
    public int speed(){
@@ -57,12 +76,12 @@ public enum DinosaurType {
       return armor;
    }//End Method
    
-   public List< DinosaurAction > moves(){
-      return moves;
+   public List< DinosaurActions > actions(){
+      return actions;
    }//End Method
    
-   public Dinosaur create(){
-      return new Dinosaur( this );
+   public BattlingDinosaur create(){
+      return new BattlingDinosaur( this );
    }//End Method
    
 }//End Class
