@@ -1,7 +1,11 @@
 package uk.dangrew.jwags.model;
 
+import static uk.dangrew.jwags.model.DinosaurActions.Allosaurus_ArmorPiercingImpact;
+import static uk.dangrew.jwags.model.DinosaurActions.Allosaurus_DefenseShatteringStrike;
 import static uk.dangrew.jwags.model.DinosaurActions.Stegosaurus_SuperiorityStrike;
 import static uk.dangrew.jwags.model.DinosaurActions.Stegosaurus_Thagomizer;
+import static uk.dangrew.jwags.model.DinosaurActions.Tarbosaurus_ArmorPiercingImpact;
+import static uk.dangrew.jwags.model.DinosaurActions.Tarbosaurus_DefenseShatteringStrike;
 import static uk.dangrew.jwags.model.DinosaurActions.Velociraptor_Pounce;
 import static uk.dangrew.jwags.model.DinosaurActions.Velociraptor_Strike;
 
@@ -10,10 +14,20 @@ import java.util.List;
 
 public enum DinosaurType {
    
+   Allosaurus(
+            104, 5010, 1650, 20, 0,
+            Allosaurus_DefenseShatteringStrike,
+            Allosaurus_ArmorPiercingImpact
+   ),
    Stegosaurus( 
             117, 4500, 1200, 5, 20, 
             Stegosaurus_SuperiorityStrike, 
             Stegosaurus_Thagomizer 
+   ),
+   Tarbosaurus(
+            104, 4650, 1600, 40, 0,
+            Tarbosaurus_DefenseShatteringStrike,
+            Tarbosaurus_ArmorPiercingImpact
    ),
    Velociraptor( 
             132, 1950, 1320, 5, 0, 

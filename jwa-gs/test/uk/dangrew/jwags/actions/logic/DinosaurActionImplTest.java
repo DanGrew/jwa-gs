@@ -6,6 +6,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.junit.Before;
@@ -14,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 
 import uk.dangrew.jwags.effects.logic.Distraction;
 import uk.dangrew.jwags.effects.logic.Effect;
+import uk.dangrew.jwags.effects.logic.Shield;
 import uk.dangrew.jwags.model.BattlingDinosaur;
 import uk.dangrew.jwags.model.DinosaurActionType;
 import uk.dangrew.jwags.model.DinosaurType;
@@ -24,9 +26,14 @@ public class DinosaurActionImplTest {
    private class TestDinosaurAction extends DinosaurActionImpl {
 
       public TestDinosaurAction() {
-         super( 1, 2, distractionSupplier );
+         super( 1, 2 );
       }//End Constructor
 
+      @Override protected void supplyEffects( List< Supplier< Effect > > attackingEffects, List< Supplier< Effect > > defendingEffects ) {
+         attackingEffects.add( distractionSupplier );
+         defendingEffects.add( shieldSupplier );
+      }//End Method
+      
       @Override protected DinosaurActionType type() {
          return DinosaurActionType.Strike;
       }//End Method
@@ -41,7 +48,9 @@ public class DinosaurActionImplTest {
    private BattlingDinosaur defending;
    
    private Distraction distraction;
+   private Shield shield;
    private Supplier< Effect > distractionSupplier;
+   private Supplier< Effect > shieldSupplier;
    private boolean performedAction;
    
    private TestDinosaurAction systemUnderTest;
@@ -50,6 +59,7 @@ public class DinosaurActionImplTest {
       TestApplication.startPlatform();
       MockitoAnnotations.initMocks( this );
       distractionSupplier = () -> distraction = new Distraction( 1, 0.5 );
+      shieldSupplier = () -> shield = new Shield( 1, 0.5 );
       attacking = spy( DinosaurType.BasicDinosaur.create() );
       defending = spy( DinosaurType.ArmoredDinosaur.create() );
       systemUnderTest = new TestDinosaurAction();
@@ -75,9 +85,11 @@ public class DinosaurActionImplTest {
    @Test public void shouldExecuteAction(){
       systemUnderTest.execute( attacking, defending );
       assertThat( performedAction, is( true ) );
-      assertThat( defending.effects(), hasSize( 1 ) );
-      assertThat( defending.effects().get( 0 ), is( distraction ) );
-      verify( attacking ).turnComplete();
+      assertThat( defending.attackingEffects(), hasSize( 1 ) );
+      assertThat( defending.attackingEffects().get( 0 ), is( distraction ) );
+      assertThat( attacking.defendingEffects(), hasSize( 1 ) );
+      assertThat( attacking.defendingEffects().get( 0 ), is( shield ) );
+      verify( attacking ).attacked();
       assertThat( systemUnderTest.currentCooldown(), is( 2 ) );
    }//End Method
 

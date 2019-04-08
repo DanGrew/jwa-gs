@@ -1,28 +1,42 @@
 package uk.dangrew.jwags.actions.logic;
 
-import java.util.function.Supplier;
-
-import uk.dangrew.jwags.effects.logic.Effect;
+import uk.dangrew.jwags.effects.calculations.BattleStatistics;
 import uk.dangrew.jwags.model.BattlingDinosaur;
 
 public abstract class StandardAttackAction extends DinosaurActionImpl {
 
+   private final BattleStatistics battlingStatistics;
+   private final boolean bypassesArmor;
    private final double damageMultiplier;
    
    protected StandardAttackAction(
             int delay,
             int cooldown,
-            double damageMultiplier, 
-            Supplier< Effect >... effectSuppliers 
+            double damageMultiplier
    ) {
-      super( delay, cooldown, effectSuppliers );
+      this( delay, cooldown, damageMultiplier, false );
+   }//End Constructor
+   
+   protected StandardAttackAction(
+            int delay,
+            int cooldown,
+            double damageMultiplier ,
+            boolean bypassesArmor
+   ) {
+      super( delay, cooldown );
+      this.battlingStatistics = new BattleStatistics();
+      this.bypassesArmor = bypassesArmor;
       this.damageMultiplier = damageMultiplier;
    }//End Constructor
    
    @Override public void performAction( BattlingDinosaur attacking, BattlingDinosaur defending ) {
-      double armorPortion = 1 - defending.armor() / 100.0;
+      double armorPortion = 1;
+      if ( !bypassesArmor ) {
+         armorPortion = 1 - defending.armor() / 100.0;
+      }
       double damageAccountingForArmor = attacking.damage() * damageMultiplier * armorPortion;
-      double resutingHealth = defending.health() - damageAccountingForArmor;
+      double damageAccoutningForDefense = battlingStatistics.damageAgainst( defending, damageAccountingForArmor );
+      double resutingHealth = defending.health() - damageAccoutningForDefense;
       defending.setHealth( ( int )resutingHealth );
    }//End Method
    

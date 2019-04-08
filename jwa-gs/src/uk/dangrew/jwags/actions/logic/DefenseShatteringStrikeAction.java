@@ -3,28 +3,27 @@ package uk.dangrew.jwags.actions.logic;
 import java.util.List;
 import java.util.function.Supplier;
 
-import uk.dangrew.jwags.effects.logic.Distraction;
 import uk.dangrew.jwags.effects.logic.Effect;
-import uk.dangrew.jwags.effects.logic.SpeedReduction;
+import uk.dangrew.jwags.effects.logic.Shield;
 import uk.dangrew.jwags.model.BattlingDinosaur;
 import uk.dangrew.jwags.model.DinosaurActionType;
 
-public class SuperiorityStrikeAction extends StandardAttackAction {
+public class DefenseShatteringStrikeAction extends StandardAttackAction {
 
-   public SuperiorityStrikeAction() {
-      super( 0, 0, 1 );
+   public DefenseShatteringStrikeAction() {
+      super( 0, 0, 1, true );
    }//End Constructor
    
    @Override protected void supplyEffects( List< Supplier< Effect > > attackingEffects, List< Supplier< Effect > > defendingEffects ) {
-      attackingEffects.add( () -> new SpeedReduction( 1 ) );
+      //none
    }//End Method
    
    @Override protected DinosaurActionType type() {
-      return DinosaurActionType.SuperiorityStrike;
+      return DinosaurActionType.DefenseShatteringStrike;
    }//End Method
    
    @Override public void performAction( BattlingDinosaur attacking, BattlingDinosaur defending ) {
-      attacking.attackingEffects().removeIf( e -> e instanceof Distraction );
+      defending.defendingEffects().removeIf( e -> e instanceof Shield );
       super.performAction( attacking, defending );
    }//End Method
 }//End Class

@@ -3,26 +3,25 @@ package uk.dangrew.jwags.actions.logic;
 import java.util.List;
 import java.util.function.Supplier;
 
-import uk.dangrew.jwags.effects.logic.Distraction;
 import uk.dangrew.jwags.effects.logic.Effect;
+import uk.dangrew.jwags.model.BattlingDinosaur;
 import uk.dangrew.jwags.model.DinosaurActionType;
 
-public class PounceAction extends StandardAttackAction {
+public class ArmorPiercingImpactAction extends StandardAttackAction {
 
-   public PounceAction() {
-      super( 0, 1, 2 );
+   public ArmorPiercingImpactAction() {
+      super( 0, 2, 1.5, true );
    }//End Constructor
    
    @Override protected void supplyEffects( List< Supplier< Effect > > attackingEffects, List< Supplier< Effect > > defendingEffects ) {
-      attackingEffects.add( () -> new Distraction( 1, defenderDamageReductionMultiplier() ) );
+      //none
    }//End Method
    
    @Override protected DinosaurActionType type() {
-      return DinosaurActionType.Pounce;
+      return DinosaurActionType.ArmorPiercingImpact;
    }//End Method
    
-   static double defenderDamageReductionMultiplier(){
-      return 0.5;
+   @Override public void performAction( BattlingDinosaur attacking, BattlingDinosaur defending ) {
+      super.performAction( attacking, defending );
    }//End Method
-   
 }//End Class

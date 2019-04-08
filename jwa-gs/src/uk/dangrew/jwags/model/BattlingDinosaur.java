@@ -7,24 +7,33 @@ import java.util.stream.Collectors;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import uk.dangrew.jwags.actions.logic.DinosaurAction;
+import uk.dangrew.jwags.effects.calculations.BattleStatistics;
 import uk.dangrew.jwags.effects.logic.Effect;
 
 public class BattlingDinosaur implements Dinosaur {
    
+   private final BattleStatistics statistics;
    private final DinosaurType type;
    private final ObjectProperty< Integer > health;
-   private final List< Effect > effects;
+   private final List< Effect > attackingEffects;
+   private final List< Effect > defendingEffects;
    
    public BattlingDinosaur( 
             DinosaurType type
    ) {
+      this.statistics = new BattleStatistics();
       this.type = type;
       this.health = new SimpleObjectProperty<>( type.health() );
-      this.effects = new ArrayList<>();
+      this.attackingEffects = new ArrayList<>();
+      this.defendingEffects = new ArrayList<>();
    }//End Constructor
    
    @Override public String name(){
       return type.name();
+   }//End Method
+   
+   public DinosaurType type(){
+      return type;
    }//End Method
    
    @Override public int health(){
@@ -36,19 +45,11 @@ public class BattlingDinosaur implements Dinosaur {
    }//End Method
    
    @Override public int speed(){
-      int currentSpeed = type.speed();
-      for ( Effect effect : effects ) {
-         currentSpeed = effect.modifySpeed( currentSpeed );
-      }
-      return currentSpeed;
+      return statistics.speedOf( this );
    }//End Method
    
    @Override public int damage(){
-      int currentDamage = type.damage();
-      for ( Effect effect : effects ) {
-         currentDamage = effect.modifyDamage( currentDamage );
-      }
-      return currentDamage;
+      return statistics.damageOf( this );
    }//End Method
    
    @Override public int armor(){
@@ -63,18 +64,23 @@ public class BattlingDinosaur implements Dinosaur {
       return type.actions().stream().map( DinosaurActions::action ).collect( Collectors.toList() );
    }//End Method
    
-   public void apply( Effect effect ) {
-      this.effects.add( effect );
+   public List< Effect > attackingEffects(){
+      return attackingEffects;
    }//End Method
    
-   public List< Effect > effects(){
-      return effects;
+   public List< Effect > defendingEffects(){
+      return defendingEffects;
    }//End Method
    
-   public void turnComplete(){
-      this.effects.forEach( Effect::turnComplete );
-      this.effects.removeIf( Effect::hasExpired );
+   public void attacked(){
+      this.attackingEffects.forEach( Effect::turnComplete );
+      this.attackingEffects.removeIf( Effect::hasExpired );
       this.type.actions().stream().map( DinosaurActions::action ).forEach( DinosaurAction::turnComplete );
+   }//End Method
+   
+   public void defended(){
+      this.defendingEffects.forEach( Effect::turnComplete );
+      this.defendingEffects.removeIf( Effect::hasExpired );      
    }//End Method
    
    public DinosaurSnapshot snapshot() {

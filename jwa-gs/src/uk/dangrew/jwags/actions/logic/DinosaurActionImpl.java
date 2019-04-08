@@ -1,6 +1,6 @@
 package uk.dangrew.jwags.actions.logic;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -13,20 +13,28 @@ public abstract class DinosaurActionImpl implements DinosaurAction {
 
    private final int delay;
    private final int cooldown;
-   private final List< Supplier< Effect > > effectSuppliers;
+   private final List< Supplier< Effect > > attackingEffectSuppliers;
+   private final List< Supplier< Effect > > defendingEffectSuppliers;
    
    private int currentDelay;
    private int currentCooldown;
    
-   public DinosaurActionImpl( int delay, int cooldown, Supplier< Effect >... effects ) {
+   public DinosaurActionImpl( int delay, int cooldown ) {
       this.delay = delay;
       this.cooldown = cooldown;
       
       this.currentDelay = delay;
       this.currentCooldown = 0;
       
-      this.effectSuppliers = Arrays.asList( effects );
+      this.attackingEffectSuppliers = new ArrayList<>();
+      this.defendingEffectSuppliers = new ArrayList<>();
+      this.supplyEffects( attackingEffectSuppliers, defendingEffectSuppliers );
    }//End Constructor
+   
+   protected abstract void supplyEffects( 
+            List< Supplier< Effect > > attackingEffects,
+            List< Supplier< Effect > > defendingEffects
+   );
    
    protected abstract DinosaurActionType type();
    
@@ -57,16 +65,18 @@ public abstract class DinosaurActionImpl implements DinosaurAction {
    }//End Method
    
    public final void execute( BattlingDinosaur attacking, BattlingDinosaur defending ) {
+      applyEffects( attacking, defending );
       performAction( attacking, defending );
-      applyEffects( defending );
-      attacking.turnComplete();
+      attacking.attacked();
+      defending.defended();
       cooldown();
    }//End Method
    
    protected abstract void performAction( BattlingDinosaur attacking, BattlingDinosaur defending );
    
-   private void applyEffects( BattlingDinosaur defending ){
-      effectSuppliers.forEach( supplier -> defending.apply( supplier.get() ) );
+   private void applyEffects( BattlingDinosaur attacking, BattlingDinosaur defending ){
+      attackingEffectSuppliers.forEach( supplier -> defending.attackingEffects().add( supplier.get() ) );
+      defendingEffectSuppliers.forEach( supplier -> attacking.defendingEffects().add( supplier.get() ) );
    }//End Method
    
    private void cooldown(){

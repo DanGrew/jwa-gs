@@ -18,7 +18,8 @@ public class DinosaurSnapshot implements Dinosaur {
    private final int critical;
    private final int armor;
    private final List< DinosaurActionSnapshot > actions;
-   private final List< EffectSnapshot > effectsApplied;
+   private final List< EffectSnapshot > attackingEffectsApplied;
+   private final List< EffectSnapshot > defendingEffectsApplied;
    
    public DinosaurSnapshot( 
             BattlingDinosaur dinosaur, DinosaurType type
@@ -33,8 +34,10 @@ public class DinosaurSnapshot implements Dinosaur {
       this.actions = new ArrayList<>();
       dinosaur.actions().stream().map( DinosaurAction::snapshot ).forEach( actions::add );
       
-      this.effectsApplied = new ArrayList<>();
-      dinosaur.effects().stream().map( Effect::snapshot ).forEach( effectsApplied::add );
+      this.attackingEffectsApplied = new ArrayList<>();
+      dinosaur.attackingEffects().stream().map( Effect::snapshot ).forEach( attackingEffectsApplied::add );
+      this.defendingEffectsApplied = new ArrayList<>();
+      dinosaur.defendingEffects().stream().map( Effect::snapshot ).forEach( defendingEffectsApplied::add );
    }//End Constructor
    
    @Override public String name(){
@@ -65,8 +68,12 @@ public class DinosaurSnapshot implements Dinosaur {
       return actions;
    }//End Method
    
-   public List< EffectSnapshot > effects() {
-      return effectsApplied;
+   public List< EffectSnapshot > attackingEffects() {
+      return attackingEffectsApplied;
+   }//End Method
+   
+   public List< EffectSnapshot > defendingEffects() {
+      return defendingEffectsApplied;
    }//End Method
 
    @Override public String displayableDescription() {
@@ -74,7 +81,7 @@ public class DinosaurSnapshot implements Dinosaur {
       this.actions.forEach( action -> actions.add( action.toString() ) );
       
       StringJoiner effects = new StringJoiner( ", " );
-      this.effectsApplied.forEach( effect -> effects.add( effect.toString() ) );
+      this.attackingEffectsApplied.forEach( effect -> effects.add( effect.toString() ) );
       
       return new StringBuilder( name() )
          .append( " (" )
