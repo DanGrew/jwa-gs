@@ -8,7 +8,7 @@ public class Distraction extends EffectImpl {
    private final double damageModifier;
    
    public Distraction( int activeForTurns, double damageModifier ) {
-      super( activeForTurns );
+      super( EffectType.Distraction, activeForTurns );
       this.damageModifier = damageModifier;
    }//End Constructor
 
@@ -18,6 +18,10 @@ public class Distraction extends EffectImpl {
    
    @Override public EffectSnapshot snapshot() {
       return new EffectSnapshot( EffectType.Distraction, turnsRemaining(), damageModifier );
+   }//End Method
+   
+   @Override public Effect copy() {
+      return new Distraction( turnsRemaining(), damageModifier );
    }//End Method
    
 }//End Class

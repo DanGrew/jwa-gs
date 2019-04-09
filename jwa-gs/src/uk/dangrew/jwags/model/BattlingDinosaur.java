@@ -15,6 +15,7 @@ public class BattlingDinosaur implements Dinosaur {
    private final BattleStatistics statistics;
    private final DinosaurType type;
    private final ObjectProperty< Integer > health;
+   private final List< DinosaurAction > actions;
    private final List< Effect > attackingEffects;
    private final List< Effect > defendingEffects;
    
@@ -26,6 +27,9 @@ public class BattlingDinosaur implements Dinosaur {
       this.health = new SimpleObjectProperty<>( type.health() );
       this.attackingEffects = new ArrayList<>();
       this.defendingEffects = new ArrayList<>();
+      this.actions = type.actions().stream()
+               .map( DinosaurActions::action )
+               .collect( Collectors.toList() );
    }//End Constructor
    
    @Override public String name(){
@@ -61,7 +65,7 @@ public class BattlingDinosaur implements Dinosaur {
    }//End Method
    
    public List< DinosaurAction > actions(){
-      return type.actions().stream().map( DinosaurActions::action ).collect( Collectors.toList() );
+      return actions;
    }//End Method
    
    public List< Effect > attackingEffects(){
@@ -75,7 +79,7 @@ public class BattlingDinosaur implements Dinosaur {
    public void attacked(){
       this.attackingEffects.forEach( Effect::turnComplete );
       this.attackingEffects.removeIf( Effect::hasExpired );
-      this.type.actions().stream().map( DinosaurActions::action ).forEach( DinosaurAction::turnComplete );
+      this.actions.forEach( DinosaurAction::turnComplete );
    }//End Method
    
    public void defended(){
@@ -85,6 +89,16 @@ public class BattlingDinosaur implements Dinosaur {
    
    public DinosaurSnapshot snapshot() {
       return new DinosaurSnapshot( this, type );
+   }//End Method
+   
+   public BattlingDinosaur copy() {
+      BattlingDinosaur copy = new BattlingDinosaur( type );
+      copy.health.set( health() );
+      copy.actions.clear();
+      actions.forEach( a -> copy.actions.add( a.copy() ) );
+      attackingEffects.forEach( e -> copy.attackingEffects.add( e.copy() ) );
+      defendingEffects.forEach( e -> copy.defendingEffects.add( e.copy() ) );
+      return copy;
    }//End Method
 
    @Override public String displayableDescription() {

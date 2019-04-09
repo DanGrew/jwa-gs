@@ -17,8 +17,12 @@ public class ThagomizerAction extends StandardAttackAction {
       attackingEffects.add( () -> new SpeedReduction( 3 ) );
    }//End Method
    
-   @Override protected DinosaurActionType type() {
+   @Override public DinosaurActionType type() {
       return DinosaurActionType.Thagmoizer;
+   }//End Method
+   
+   @Override protected DinosaurActionImpl createBlank() {
+      return new ThagomizerAction();
    }//End Method
    
 }//End Class

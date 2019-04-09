@@ -8,7 +8,7 @@ public class Shield extends EffectImpl {
    private final double shieldDamageModifier;
    
    public Shield( int activeForTurns, double damageModifier ) {
-      super( activeForTurns );
+      super( EffectType.Shield, activeForTurns );
       this.shieldDamageModifier = damageModifier;
    }//End Constructor
    
@@ -18,6 +18,10 @@ public class Shield extends EffectImpl {
 
    @Override public EffectSnapshot snapshot() {
       return new EffectSnapshot( EffectType.Shield, turnsRemaining(), shieldDamageModifier );
+   }//End Method
+   
+   @Override public Effect copy() {
+      return new Shield( turnsRemaining(), shieldDamageModifier );
    }//End Method
    
 }//End Class

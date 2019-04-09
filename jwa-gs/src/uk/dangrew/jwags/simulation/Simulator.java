@@ -2,11 +2,11 @@ package uk.dangrew.jwags.simulation;
 
 import java.util.Optional;
 
-import javafx.util.Pair;
 import uk.dangrew.jwags.actions.logic.DinosaurAction;
 import uk.dangrew.jwags.mechanics.PlayerOrderCalculator;
 import uk.dangrew.jwags.mechanics.VictoryCalculator;
-import uk.dangrew.jwags.model.BattlingDinosaur;
+import uk.dangrew.jwags.model.BattleSnapshot;
+import uk.dangrew.jwags.model.DinosaurActionPair;
 
 public class Simulator {
 
@@ -18,53 +18,66 @@ public class Simulator {
       this.victory = new VictoryCalculator();
    }//End Class
    
-   public Optional< Turn > simulate( TurnActions actions ) {
-      if ( !actionAvailable( actions.dinosaurs().getKey(), actions.actionForDinosaur( actions.dinosaurs().getKey() ) ) ){
-         return Optional.empty();
+   public void simulate( 
+            DinosaurActionPair pair1, 
+            DinosaurActionPair pair2,
+            Match match 
+   ) {
+      DinosaurActionPair first = playOrder.faster( pair1, pair2 );
+      DinosaurActionPair second = playOrder.slower( pair1, pair2 );
+      
+      if ( !actionAvailable( first ) ){
+         match.addRecord( new MatchRecord(
+                  MatchRecordType.TurnStart, 
+                  null, 
+                  new BattleSnapshot( first.dinosaur().snapshot(), second.dinosaur().snapshot() ), 
+                  MatchResult.FirstActionUnnavailable 
+         ) );
+         return;
       }
       
-      if ( !actionAvailable( actions.dinosaurs().getValue(), actions.actionForDinosaur( actions.dinosaurs().getValue() ) ) ){
-         return Optional.empty();
+      if ( !actionAvailable( second ) ){
+         match.addRecord( new MatchRecord(
+                  MatchRecordType.TurnStart, 
+                  null, 
+                  new BattleSnapshot( first.dinosaur().snapshot(), second.dinosaur().snapshot() ), 
+                  MatchResult.SecondActionUnnavailable 
+         ) );
+         return;
       }
       
-      Turn turn = new Turn();
+      match.addRecord( new MatchRecord(
+               MatchRecordType.TurnStart, 
+               null, 
+               new BattleSnapshot( first.dinosaur().snapshot(), second.dinosaur().snapshot() ), 
+               MatchResult.Incomplete 
+      ) );
       
-      Pair< BattlingDinosaur, BattlingDinosaur > order = playOrder.determinePlayOrder( actions.dinosaurs() );
-      BattlingDinosaur faster = order.getKey();
-      BattlingDinosaur slower = order.getValue();
+      first.action().execute( first.dinosaur(), second.dinosaur() );
+      match.addRecord( new MatchRecord(
+               MatchRecordType.FirstAction, 
+               first.action().snapshot(), 
+               new BattleSnapshot( first.dinosaur().snapshot(), second.dinosaur().snapshot() ), 
+               victory.determineVictorLoser( first.dinosaur(), second.dinosaur() )
+      ) );
       
-      turn.beginTurn( faster, slower );
-      
-      DinosaurAction fasterAction = actions.actionForDinosaur( faster );
-      fasterAction.execute( faster, slower );
-      
-      turn.fasterActionExecuted( fasterAction, faster, slower );
-      
-      Pair< BattlingDinosaur, BattlingDinosaur > victorLoser = victory.determineVictorLoser( faster, slower );
-      if ( victorLoser != null ) {
-         turn.victoryAfterFasterAction( victorLoser );
-         return Optional.of( turn );
+      if ( match.hasConcluded() ) {
+         return;
       }
       
-      DinosaurAction slowerAction = actions.actionForDinosaur( slower );
-      slowerAction.execute( slower, faster );
-      
-      turn.slowerActionExecuted( slowerAction, faster, slower );
-      
-      victorLoser = victory.determineVictorLoser( faster, slower );
-      if ( victorLoser != null ) {
-         turn.victoryAfterSlowerAction( victorLoser );
-         return Optional.of( turn );
-      }
-      
-      //affect effects
-      //victory check
-      
-      return Optional.of( turn );
+      second.action().execute( second.dinosaur(), first.dinosaur() );
+      match.addRecord( new MatchRecord(
+               MatchRecordType.SecondAction, 
+               second.action().snapshot(), 
+               new BattleSnapshot( first.dinosaur().snapshot(), second.dinosaur().snapshot() ), 
+               victory.determineVictorLoser( first.dinosaur(), second.dinosaur() )
+      ) );
    }//End Method
    
-   private boolean actionAvailable( BattlingDinosaur dinosaur, DinosaurAction action ) {
-      Optional< DinosaurAction > foundAction = dinosaur.actions().stream().filter( a -> action == a ).findFirst();
+   private boolean actionAvailable( DinosaurActionPair pair ) {
+      Optional< DinosaurAction > foundAction = pair.dinosaur().actions().stream()
+               .filter( a -> pair.action() == a )
+               .findFirst();
       if ( foundAction.isPresent() ) {
          return foundAction.get().isAvailable();
       } else {

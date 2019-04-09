@@ -1,10 +1,13 @@
 package uk.dangrew.jwags.effects.logic;
 
 import uk.dangrew.jwags.effects.snapshot.EffectSnapshot;
+import uk.dangrew.jwags.model.EffectType;
 
 public interface Effect {
 
-   public void turnComplete();
+   public EffectType type();
+   
+   public int turnsRemaining();
    
    public boolean hasExpired();
    
@@ -16,7 +19,11 @@ public interface Effect {
       return currentDamage;
    }//End Method
    
+   public void turnComplete();
+   
    public EffectSnapshot snapshot();
+   
+   public Effect copy();
    
 }//End Interface
 

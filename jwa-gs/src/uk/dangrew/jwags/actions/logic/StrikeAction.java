@@ -16,8 +16,12 @@ public class StrikeAction extends StandardAttackAction {
       //none
    }//End Method
    
-   @Override protected DinosaurActionType type() {
+   @Override public DinosaurActionType type() {
       return DinosaurActionType.Strike;
+   }//End Method
+   
+   @Override protected DinosaurActionImpl createBlank() {
+      return new StrikeAction();
    }//End Method
    
 }//End Class

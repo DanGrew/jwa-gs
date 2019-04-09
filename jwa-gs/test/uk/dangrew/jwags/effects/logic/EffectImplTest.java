@@ -16,11 +16,15 @@ public class EffectImplTest {
    private class TestEffect extends EffectImpl {
 
       public TestEffect( int activeForTurns ) {
-         super( activeForTurns );
+         super( null, activeForTurns );
       }//End Constructor
 
       @Override public EffectSnapshot snapshot() {
          return null;
+      }//End Method
+      
+      @Override public Effect copy() {
+         return new TestEffect( turnsRemaining() );
       }//End Method
       
    }//End Class

@@ -34,14 +34,17 @@ public class DinosaurActionImplTest {
          defendingEffects.add( shieldSupplier );
       }//End Method
       
-      @Override protected DinosaurActionType type() {
+      @Override public DinosaurActionType type() {
          return DinosaurActionType.Strike;
       }//End Method
 
       @Override protected void performAction( BattlingDinosaur attacking, BattlingDinosaur defending ) {
          performedAction = true;
       }//End Method
-      
+
+      @Override protected DinosaurActionImpl createBlank() {
+         return new TestDinosaurAction();
+      }//End Method
    }//End Class
     
    private BattlingDinosaur attacking;
@@ -91,6 +94,15 @@ public class DinosaurActionImplTest {
       assertThat( attacking.defendingEffects().get( 0 ), is( shield ) );
       verify( attacking ).attacked();
       assertThat( systemUnderTest.currentCooldown(), is( 2 ) );
+   }//End Method
+   
+   @Test public void shouldCopy(){
+      systemUnderTest.execute( attacking, defending );
+      systemUnderTest.turnComplete();
+      
+      DinosaurAction copy = systemUnderTest.copy();
+      assertThat( copy.currentCooldown(), is( systemUnderTest.currentCooldown() ) );
+      assertThat( copy.currentDelay(), is( systemUnderTest.currentDelay() ) );
    }//End Method
 
 }//End Class

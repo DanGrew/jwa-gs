@@ -17,12 +17,16 @@ public class PounceAction extends StandardAttackAction {
       attackingEffects.add( () -> new Distraction( 1, defenderDamageReductionMultiplier() ) );
    }//End Method
    
-   @Override protected DinosaurActionType type() {
+   @Override public DinosaurActionType type() {
       return DinosaurActionType.Pounce;
    }//End Method
    
    static double defenderDamageReductionMultiplier(){
       return 0.5;
+   }//End Method
+   
+   @Override protected DinosaurActionImpl createBlank() {
+      return new PounceAction();
    }//End Method
    
 }//End Class

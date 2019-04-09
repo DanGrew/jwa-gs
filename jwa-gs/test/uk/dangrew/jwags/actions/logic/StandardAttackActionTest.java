@@ -29,8 +29,12 @@ public class StandardAttackActionTest {
       @Override protected void supplyEffects( List< Supplier< Effect > > attackingEffects, List< Supplier< Effect > > defendingEffects ) {
       }//End Method
       
-      @Override protected DinosaurActionType type() {
+      @Override public DinosaurActionType type() {
          return DinosaurActionType.Strike;
+      }//End Method
+      
+      @Override protected DinosaurActionImpl createBlank() {
+         return new TestStandardAttackAction();
       }//End Method
       
    }//End Class

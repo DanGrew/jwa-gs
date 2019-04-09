@@ -19,12 +19,16 @@ public class SuperiorityStrikeAction extends StandardAttackAction {
       attackingEffects.add( () -> new SpeedReduction( 1 ) );
    }//End Method
    
-   @Override protected DinosaurActionType type() {
+   @Override public DinosaurActionType type() {
       return DinosaurActionType.SuperiorityStrike;
    }//End Method
    
    @Override public void performAction( BattlingDinosaur attacking, BattlingDinosaur defending ) {
       attacking.attackingEffects().removeIf( e -> e instanceof Distraction );
       super.performAction( attacking, defending );
+   }//End Method
+   
+   @Override protected DinosaurActionImpl createBlank() {
+      return new SuperiorityStrikeAction();
    }//End Method
 }//End Class

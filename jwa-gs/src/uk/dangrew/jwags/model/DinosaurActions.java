@@ -1,5 +1,7 @@
 package uk.dangrew.jwags.model;
 
+import java.util.function.Supplier;
+
 import uk.dangrew.jwags.actions.logic.ArmorPiercingImpactAction;
 import uk.dangrew.jwags.actions.logic.DefenseShatteringStrikeAction;
 import uk.dangrew.jwags.actions.logic.DinosaurAction;
@@ -10,22 +12,22 @@ import uk.dangrew.jwags.actions.logic.ThagomizerAction;
 
 public enum DinosaurActions {
    
-   Allosaurus_DefenseShatteringStrike( new DefenseShatteringStrikeAction() ),
-   Allosaurus_ArmorPiercingImpact( new ArmorPiercingImpactAction() ),
-   Stegosaurus_SuperiorityStrike( new SuperiorityStrikeAction() ),
-   Stegosaurus_Thagomizer( new ThagomizerAction() ),
-   Tarbosaurus_DefenseShatteringStrike( new DefenseShatteringStrikeAction() ),
-   Tarbosaurus_ArmorPiercingImpact( new ArmorPiercingImpactAction() ),
-   Velociraptor_Strike( new StrikeAction() ),
-   Velociraptor_Pounce( new PounceAction() );
+   Allosaurus_DefenseShatteringStrike( DefenseShatteringStrikeAction::new ),
+   Allosaurus_ArmorPiercingImpact( ArmorPiercingImpactAction::new ),
+   Stegosaurus_SuperiorityStrike( SuperiorityStrikeAction::new ),
+   Stegosaurus_Thagomizer( ThagomizerAction::new ),
+   Tarbosaurus_DefenseShatteringStrike( DefenseShatteringStrikeAction::new ),
+   Tarbosaurus_ArmorPiercingImpact( ArmorPiercingImpactAction::new ),
+   Velociraptor_Strike( StrikeAction::new ),
+   Velociraptor_Pounce( PounceAction::new );
    
-   private final DinosaurAction action;
+   private final Supplier< DinosaurAction > supplier;
    
-   private DinosaurActions( DinosaurAction action ) {
-      this.action = action;
+   private DinosaurActions( Supplier< DinosaurAction > supplier ) {
+      this.supplier = supplier;
    }//End Constructor
    
    public DinosaurAction action(){
-      return action;
+      return supplier.get();
    }//End Method
 }//End Enum

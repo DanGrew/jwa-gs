@@ -1,34 +1,35 @@
 package uk.dangrew.jwags.simulation;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.EnumMap;
 
-import javafx.util.Pair;
 import uk.dangrew.jwags.actions.logic.DinosaurAction;
 import uk.dangrew.jwags.model.BattlingDinosaur;
-import uk.dangrew.jwags.model.DinosaurActions;
+import uk.dangrew.jwags.model.DinosaurActionType;
+import uk.dangrew.jwags.model.DinosaurType;
 
 public class TurnActions {
 
-   private final Pair< BattlingDinosaur, BattlingDinosaur > dinosaurs;
-   private final Map< BattlingDinosaur, DinosaurActions > actions;
+   private final EnumMap< DinosaurType, DinosaurActionType > actions;
    
    public TurnActions( 
-            BattlingDinosaur dinosaur1, DinosaurActions action1, 
-            BattlingDinosaur dinosaur2, DinosaurActions action2 
+            DinosaurType type1, DinosaurActionType actionType1, 
+            DinosaurType type2, DinosaurActionType action2Type 
    ) {
-      this.dinosaurs = new Pair<>( dinosaur1, dinosaur2 );
-      this.actions = new HashMap<>();
-      this.actions.put( dinosaur1, action1 );
-      this.actions.put( dinosaur2, action2 );
+      if ( type1 == type2 ) {
+         throw new IllegalArgumentException();
+      }
+      this.actions = new EnumMap<>( DinosaurType.class );
+      this.actions.put( type1, actionType1 );
+      this.actions.put( type2, action2Type );
    }//End Constructor
    
-   public Pair< BattlingDinosaur, BattlingDinosaur > dinosaurs(){
-      return dinosaurs;
-   }//End Method
-   
    public DinosaurAction actionForDinosaur( BattlingDinosaur dinosaur ) {
-      return actions.get( dinosaur ).action();
+      for ( DinosaurAction action : dinosaur.actions() ) {
+         if ( action.type() == actions.get( dinosaur.type() ) ) {
+            return action;
+         }
+      }
+      return null;
    }//End Method
    
 }//End Class

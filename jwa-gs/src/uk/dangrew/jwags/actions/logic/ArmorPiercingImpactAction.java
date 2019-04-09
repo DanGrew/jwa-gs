@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import uk.dangrew.jwags.effects.logic.Effect;
-import uk.dangrew.jwags.model.BattlingDinosaur;
 import uk.dangrew.jwags.model.DinosaurActionType;
 
 public class ArmorPiercingImpactAction extends StandardAttackAction {
@@ -17,11 +16,11 @@ public class ArmorPiercingImpactAction extends StandardAttackAction {
       //none
    }//End Method
    
-   @Override protected DinosaurActionType type() {
+   @Override public DinosaurActionType type() {
       return DinosaurActionType.ArmorPiercingImpact;
    }//End Method
    
-   @Override public void performAction( BattlingDinosaur attacking, BattlingDinosaur defending ) {
-      super.performAction( attacking, defending );
+   @Override protected DinosaurActionImpl createBlank() {
+      return new ArmorPiercingImpactAction();
    }//End Method
 }//End Class

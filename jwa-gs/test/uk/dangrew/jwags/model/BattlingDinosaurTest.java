@@ -92,4 +92,32 @@ public class BattlingDinosaurTest {
       assertThat( systemUnderTest.attackingEffects(), is( empty() ) );
    }//End Method
 
+   @Test public void shouldCopy(){
+      systemUnderTest.attackingEffects().add( new Distraction( 2, 0.5 ) );
+      systemUnderTest.defendingEffects().add( new Shield( 2, 0.5 ) );
+      
+      systemUnderTest.setHealth( 56 );
+      BattlingDinosaur copy = systemUnderTest.copy();
+      
+      assertThat( copy.health(), is( systemUnderTest.health() ) );
+      assertThat( copy.actions().size(), is( systemUnderTest.actions().size() ) );
+      for ( int i = 0; i < copy.actions().size(); i++ ) {
+         assertThat( copy.actions().get( i ).type(), is( systemUnderTest.actions().get( i ).type() ) );
+         assertThat( copy.actions().get( i ).currentCooldown(), is( systemUnderTest.actions().get( i ).currentCooldown() ) );
+         assertThat( copy.actions().get( i ).currentDelay(), is( systemUnderTest.actions().get( i ).currentDelay() ) );
+      }
+      
+      assertThat( copy.attackingEffects().size(), is( systemUnderTest.attackingEffects().size() ) );
+      for ( int i = 0; i < copy.attackingEffects().size(); i++ ) {
+         assertThat( copy.attackingEffects().get( i ).turnsRemaining(), is( systemUnderTest.attackingEffects().get( i ).turnsRemaining() ) );
+         assertThat( copy.attackingEffects().get( i ).type(), is( systemUnderTest.attackingEffects().get( i ).type() ) );
+      }
+      
+      assertThat( copy.defendingEffects().size(), is( systemUnderTest.defendingEffects().size() ) );
+      for ( int i = 0; i < copy.defendingEffects().size(); i++ ) {
+         assertThat( copy.defendingEffects().get( i ).turnsRemaining(), is( systemUnderTest.defendingEffects().get( i ).turnsRemaining() ) );
+         assertThat( copy.defendingEffects().get( i ).type(), is( systemUnderTest.defendingEffects().get( i ).type() ) );
+      }
+   }//End Method
+   
 }//End Class

@@ -8,28 +8,35 @@ import org.junit.Test;
 import org.mockito.MockitoAnnotations;
 
 import javafx.util.Pair;
+import uk.dangrew.jwags.actions.logic.StrikeAction;
 import uk.dangrew.jwags.model.BattlingDinosaur;
+import uk.dangrew.jwags.model.DinosaurActionPair;
 import uk.dangrew.jwags.model.DinosaurType;
 import uk.dangrew.kode.launch.TestApplication;
 
 public class PlayerOrderCalculatorTest {
 
-   private BattlingDinosaur dino1;
-   private BattlingDinosaur dino2;
+   private DinosaurActionPair dino1;
+   private DinosaurActionPair dino2;
    private PlayerOrderCalculator systemUnderTest;
 
    @Before public void initialiseSystemUnderTest() {
       TestApplication.startPlatform();
       MockitoAnnotations.initMocks( this );
-      dino1 = DinosaurType.ArmoredDinosaur.create();
-      dino2 = DinosaurType.BasicDinosaur.create();
+      dino1 = new DinosaurActionPair( 
+               DinosaurType.ArmoredDinosaur.create(),
+               new StrikeAction()
+      );
+      dino2 = new DinosaurActionPair( 
+               DinosaurType.BasicDinosaur.create(),
+               new StrikeAction()
+      );
       systemUnderTest = new PlayerOrderCalculator();
    }//End Method
 
    @Test public void shouldIdentifyFastestDinosaur() {
-      assertThat( systemUnderTest.determinePlayOrder( 
-               dino1, dino2
-      ), is( new Pair<>( dino2, dino1 ) ) );
+      assertThat( systemUnderTest.faster( dino1, dino2 ), is( dino2 ) );
+      assertThat( systemUnderTest.slower( dino1, dino2 ), is( dino1 ) );
    }//End Method
 
 }//End Class

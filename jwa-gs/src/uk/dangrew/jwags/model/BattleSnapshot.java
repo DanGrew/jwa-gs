@@ -10,11 +10,11 @@ public class BattleSnapshot {
       this.slower = slower;
    }//End Constructor
    
-   public DinosaurSnapshot faster(){
+   public DinosaurSnapshot first(){
       return faster;
    }//End Method
    
-   public DinosaurSnapshot slower(){
+   public DinosaurSnapshot second(){
       return slower;
    }//End Method
    

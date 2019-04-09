@@ -36,8 +36,6 @@ public abstract class DinosaurActionImpl implements DinosaurAction {
             List< Supplier< Effect > > defendingEffects
    );
    
-   protected abstract DinosaurActionType type();
-   
    @Override public String name() {
       return type().name();
    }//End Method
@@ -87,4 +85,12 @@ public abstract class DinosaurActionImpl implements DinosaurAction {
       return new DinosaurActionSnapshot( type(), currentCooldown, currentDelay );
    }//End Method
    
+   public DinosaurAction copy(){
+      DinosaurActionImpl copy = createBlank();
+      copy.currentCooldown = currentCooldown;
+      copy.currentDelay = currentDelay;
+      return copy;
+   }//End Method
+   
+   protected abstract DinosaurActionImpl createBlank();
 }//End Class

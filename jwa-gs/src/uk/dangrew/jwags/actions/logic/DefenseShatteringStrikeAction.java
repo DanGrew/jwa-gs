@@ -18,12 +18,16 @@ public class DefenseShatteringStrikeAction extends StandardAttackAction {
       //none
    }//End Method
    
-   @Override protected DinosaurActionType type() {
+   @Override public DinosaurActionType type() {
       return DinosaurActionType.DefenseShatteringStrike;
    }//End Method
    
    @Override public void performAction( BattlingDinosaur attacking, BattlingDinosaur defending ) {
       defending.defendingEffects().removeIf( e -> e instanceof Shield );
       super.performAction( attacking, defending );
+   }//End Method
+   
+   @Override protected DinosaurActionImpl createBlank() {
+      return new DefenseShatteringStrikeAction();
    }//End Method
 }//End Class
